@@ -1,13 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-
-def calculate():
-    x = 1
-    y = 2
-    return x
+from store.models import Product, OrderItem, Order
 
 
 def say_hello(request):
-    x = calculate()
-    return render(request, 'hello.html', {'name': 'Mosh'})
+    query = Order.objects.prefetch_related('orderitem_set__product').select_related('customer').order_by('-placed_at')[:5]
+    return render(request, 'hello.html', {'orders': query})
