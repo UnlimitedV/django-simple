@@ -1,11 +1,9 @@
 <html>
   <body>
     <ul>
-      {% for order in orders %}
-        {% for orderitem in order.orderitem_set.all %}
-          <li>{{ orderitem.product }}</li>
-        {% endfor %}
-      {% endfor %}
+      {% comment %} {% for order in orders %} {% endcomment %}
+          <li>{{ orders }}</li>
+      {% comment %} {% endfor %} {% endcomment %}
     </ul>
   </body>
 </html>

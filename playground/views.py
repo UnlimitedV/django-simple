@@ -7,9 +7,5 @@ from tags.models import TaggedItem
 
 
 def say_hello(request):
-    content_type = ContentType.objects.get_for_model(Product)
-    query = TaggedItem.objects.select_related('tag').filter(
-        content_type = content_type, 
-        object_id = 8
-    )
+    query = TaggedItem.objects.get_tags_for(Product, 1)
     return render(request, 'hello.html', {'orders': query})
