@@ -10,7 +10,7 @@ from .models import Product
 
 @api_view()
 def product_list(request: Request):
-    queryset = Product.objects.all()
+    queryset = Product.objects.select_related('collection').all()
     serial = ProductSerializer(queryset, many=True)
     return Response(serial.data)
 
