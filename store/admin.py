@@ -7,15 +7,16 @@ from django.db.models.query import QuerySet
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
     parameter_name = 'inventory'
+    
 
     def lookups(self, request, model_admin):
-        return [('%2==0', 'even'), ('%2==1', 'odd')]
+        return [('0', 'even'), ('1', 'odd')]
 
     def queryset(self, request, queryset: QuerySet):
-        if self.value() == '%2==0':
+        if self.value() == '0':
+            return queryset.annotate(even=F('inventory')%2).filter(even=True)
+        elif self.value() == '1':
             return queryset.annotate(even=F('inventory')%2).filter(even=False)
-        elif self.value() == '%2==1':
-            return queryset.annotate(odd=F('inventory')%2).filter(odd=True)
 
 
 @admin.register(Product)
@@ -24,6 +25,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 100
     list_select_related = ['collection']
     list_filter = ['collection', 'last_update', InventoryFilter]
+    actions = ['increase_price']
     
     def collection_title(self, product):
         return product.collection.title
@@ -34,6 +36,8 @@ class ProductAdmin(admin.ModelAdmin):
             return 'even'
         return 'odd'
 
+    def increase_price(self, request, queryset):
+        return queryset.update(unit_price=F('unit_price')+1)
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
