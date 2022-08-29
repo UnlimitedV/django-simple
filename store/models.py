@@ -10,10 +10,13 @@ class Promotion(models.Model):
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey(
-        'Product', on_delete=models.SET_NULL, null=True, related_name='+')
+        'Product', on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
     
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title']
     
 
 class Product(models.Model):
@@ -21,13 +24,16 @@ class Product(models.Model):
     slug = models.SlugField(null=True, blank=True)
     description = models.TextField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(1)])
-    inventory = models.IntegerField()
+    inventory = models.IntegerField(validators=[MinValueValidator(0)])
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion, blank=True)
 
     def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        ordering = ['title']
 
 
 class Customer(models.Model):
