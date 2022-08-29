@@ -9,7 +9,6 @@ class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
     parameter_name = 'inventory'
     
-
     def lookups(self, request, model_admin):
         return [('0', 'even'), ('1', 'odd')]
 
@@ -23,15 +22,13 @@ class InventoryFilter(admin.SimpleListFilter):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
-    prepopulated_fields = {
-        'slug': ['title']
-    }
+    prepopulated_fields = {'slug': ['title']}
+    search_fields = ['title']
     list_display = ['id', 'title', 'unit_price', 'inventory', 'inventory_status', 'collection_title']
     list_per_page = 100
     list_select_related = ['collection']
     list_filter = ['collection', 'last_update', InventoryFilter]
     actions = ['increase_price']
-    search_fields = ['title']
     
     def collection_title(self, product):
         return product.collection.title

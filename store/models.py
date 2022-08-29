@@ -16,7 +16,6 @@ class Collection(models.Model):
         return self.title
     
 
-
 class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(null=True, blank=True)
