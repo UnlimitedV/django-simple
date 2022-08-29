@@ -1,7 +1,8 @@
 from django.contrib import admin
-from store.models import Collection, Product, Order, Customer
 from django.db.models import Count, F
 from django.db.models.query import QuerySet
+
+from store.models import Collection, Product, Order, Customer, OrderItem
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -30,6 +31,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_select_related = ['collection']
     list_filter = ['collection', 'last_update', InventoryFilter]
     actions = ['increase_price']
+    search_fields = ['title']
     
     def collection_title(self, product):
         return product.collection.title
@@ -43,11 +45,21 @@ class ProductAdmin(admin.ModelAdmin):
     def increase_price(self, request, queryset):
         return queryset.update(unit_price=F('unit_price')+1)
 
+
+class OrderItemInline(admin.TabularInline):
+    autocomplete_fields = ['product']
+    model = OrderItem
+    extra = 0
+    min_num = 1
+    max_num = 10
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer_name']
     list_select_related = ['customer']
     ordering = ['customer']
+    inlines = [OrderItemInline]
 
     def customer_name(self, order):
         fullname = order.customer.first_name + ' ' + order.customer.last_name
