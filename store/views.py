@@ -21,9 +21,7 @@ class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('product'))
     serializer_class = CollectionSerializer
 
-    def delete(self, request, pk):
-        collection = get_object_or_404(Collection.objects.annotate(products_count=Count('product')), pk=pk)
-        if collection.product_set.count() > 0:
-            return Response({"errorr": "Collection can not be deleted becouse it includes one or more products."})
-        collection.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def destroy(self, request, *args, **kwargs):
+        if Product.objects.filter(collection__id=kwargs['pk']).count() > 0:
+            return Response({"Errorr": "Collection can not be deleted becouse it includes one or more products."})
+        return super().destroy(request, *args, **kwargs)
