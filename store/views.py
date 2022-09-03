@@ -9,7 +9,7 @@ from .serializers import ProductSerializer, CollectionSerializer
 from .models import Product, Collection
 
 
-class ProductList(ListCreateAPIView):
+class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -17,15 +17,7 @@ class ProductList(ListCreateAPIView):
         return {'request': self.request}
 
 
-class ProductDetail(RetrieveAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-class CollectionList(ListCreateAPIView):
-    queryset = Collection.objects.annotate(products_count=Count('product'))
-    serializer_class = CollectionSerializer
-
-class CollectionDetail(RetrieveUpdateDestroyAPIView):
+class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count('product'))
     serializer_class = CollectionSerializer
 
