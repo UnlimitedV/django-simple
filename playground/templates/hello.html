@@ -1,9 +1,9 @@
 <html>
   <body>
-    <ul>
-      {% comment %} {% for order in orders %} {% endcomment %}
-          <li>{{ orders }}</li>
-      {% comment %} {% endfor %} {% endcomment %}
-    </ul>
+    {% if name %}
+    <h1>Hello {{ name }}</h1>
+    {% else %}
+    <h1>Hello World</h1>
+    {% endif %}
   </body>
 </html>
