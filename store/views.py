@@ -8,7 +8,7 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyM
 from rest_framework import status
 from .filters import ProductFilter
 from .models import Collection, OrderItem, Product, Review, CartItem, Cart
-from .serializers import CartSerializer, CollectionSerializer, ItemSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer
+from .serializers import CartSerializer, CollectionSerializer, ItemSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
 from .pagination import DefaultPagination
 
 
@@ -57,10 +57,12 @@ class CartViewSet(CreateModelMixin, DestroyModelMixin, RetrieveModelMixin, Gener
 
 
 class ItemViewSet(ModelViewSet):
-    
+    http_method_names = ['get', 'post', 'patch', 'delete']
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return AddItemSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateItemSerializer
         return ItemSerializer
 
     def get_queryset(self):
