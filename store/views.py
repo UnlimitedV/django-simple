@@ -12,7 +12,7 @@ from .filters import ProductFilter
 from .models import Collection, Customer, OrderItem, Product, Review, CartItem, Cart
 from .serializers import CustomerSerializer, CartSerializer, CollectionSerializer, ItemSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
 from .pagination import DefaultPagination
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 
 
 class ProductViewSet(ModelViewSet):
@@ -81,6 +81,10 @@ class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [IsAdminUser]
+
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def view_history(self, request, pk):
+        return Response('ok')
 
     @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
     def me(self, request: HttpRequest):
