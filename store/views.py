@@ -9,8 +9,8 @@ from rest_framework.decorators import action
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework import status
 from .filters import ProductFilter
-from .models import Collection, Customer, OrderItem, Product, Review, CartItem, Cart
-from .serializers import CustomerSerializer, CartSerializer, CollectionSerializer, ItemSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
+from .models import Collection, Customer, Order, OrderItem, Product, Review, CartItem, Cart
+from .serializers import CustomerSerializer, CartSerializer, CollectionSerializer, ItemSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
 from .pagination import DefaultPagination
 from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 
@@ -97,3 +97,15 @@ class CustomerViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class OrderViewSet(ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return Order.objects.all()
+        customer_id, created = Customer.objects.only('id').get_or_create(user_id=user.id)
+        return Order.objects.filter(customer_id=customer_id)
