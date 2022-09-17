@@ -10,7 +10,7 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyM
 from rest_framework import status
 from .filters import ProductFilter
 from .models import Collection, Customer, Order, OrderItem, Product, Review, CartItem, Cart
-from .serializers import CreateOrderSerializer, CustomerSerializer, CartSerializer, CollectionSerializer, ItemSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
+from .serializers import UpdateOrderSerializer, CreateOrderSerializer, CustomerSerializer, CartSerializer, CollectionSerializer, ItemSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, AddItemSerializer, UpdateItemSerializer
 from .pagination import DefaultPagination
 from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 
@@ -119,6 +119,8 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return CreateOrderSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateOrderSerializer
         return OrderSerializer
 
     def get_queryset(self):
