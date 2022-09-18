@@ -6,5 +6,4 @@ class StoreConfig(AppConfig):
     name = 'store'
 
     def ready(self) -> None:
-        import store.signals
-        return super().ready()
+        import store.signals.handlers
