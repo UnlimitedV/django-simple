@@ -183,3 +183,5 @@ EMAIL_PORT = 2525
 ADMINS = [
     ('vahid', 'vahid@domain.com')
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
